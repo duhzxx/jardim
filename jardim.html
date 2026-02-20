@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cherry Grove - Lavínia</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(to top, #2c003e, #5f0f40, #d7263d, #ff7e5f);
+    animation: skyShift 40s ease infinite;
+}
+
+/* Céu animado suave */
+@keyframes skyShift {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(0.85); }
+    100% { filter: brightness(1); }
+}
+
+/* SOL MOBILE */
+.sun {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(#ffcc33, #ff6600);
+    top: 18%;
+    left: -80px;
+    animation: moveSun 60s linear infinite;
+    box-shadow: 0 0 40px rgba(255,120,0,0.6);
+    z-index: 0;
+}
+
+@keyframes moveSun {
+    from { left: -80px; top: 18%; }
+    to { left: 110%; top: 30%; }
+}
+
+/* INTRO */
+.intro {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: #3b185f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    z-index: 20;
+}
+
+.intro h1 {
+    font-size: 16px;
+    text-shadow: 3px 3px #000;
+}
+
+.enter-btn {
+    margin-top: 40px;
+    padding: 15px 25px;
+    border: 4px solid #000;
+    background: #ff4d6d;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    box-shadow: 4px 4px #000;
+}
+
+.loading-screen {
+    display: none;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 260px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 25px;
+    border: 4px solid #000;
+    margin-top: 15px;
+    background: #333;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #ff8fab;
+}
+
+/* JARDIM MOBILE */
+.container {
+    display: none;
+    position: relative;
+    z-index: 5;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.container h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.container p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.garden {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.flower {
+    font-size: 50px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.flower:active {
+    transform: scale(1.2);
+}
+
+.message-box {
+    margin-top: 25px;
+    min-height: 50px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    font-size: 15px;
+}
+
+.fade-in { opacity: 1; }
+
+.bouquet {
+    margin-top: 25px;
+    font-size: 40px;
+    transition: box-shadow 1s ease, transform 1s ease;
+}
+
+.glow {
+    box-shadow: 0 0 50px rgba(255, 120, 180, 0.9);
+    transform: scale(1.1);
+}
+
+/* ÁRVORES MOBILE */
+.trees {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(#4e342e, #2d1b1b);
+    clip-path: polygon(
+        0% 100%, 0% 70%, 10% 60%, 20% 75%, 30% 65%, 40% 80%,
+        50% 60%, 60% 75%, 70% 65%, 80% 80%, 90% 70%, 100% 100%
+    );
+    z-index: 1;
+}
+
+/* PÉTALAS */
+.petal {
+    position: fixed;
+    top: -10px;
+    font-size: 16px;
+    animation: fall linear infinite;
+    opacity: 0.8;
+    z-index: 2;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sun"></div>
+
+<div class="intro" id="intro">
+    <h1>Lavínia 🌸</h1>
+    <button class="enter-btn" onclick="startLoading()">Entrar</button>
+
+    <div class="loading-screen" id="loading">
+        <div>Carregando jardim da Lavínia...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="garden">
+    <h2>Cherry Grove</h2>
+    <p>Um pôr do sol em tons de cerejeira, só pra você.</p>
+
+    <div class="garden">
+        <div class="flower" onclick="addFlower('🌻','Girassol — ilumina até o fim do dia.')">🌻</div>
+        <div class="flower" onclick="addFlower('🌷','Tulipa — simples, mas especial.')">🌷</div>
+        <div class="flower" onclick="addFlower('🌼','Margarida — leve como brisa.')">🌼</div>
+        <div class="flower" onclick="addFlower('🌹','Rosa — rara como pôr do sol perfeito.')">🌹</div>
+    </div>
+
+    <div id="message" class="message-box"></div>
+    <div id="bouquet" class="bouquet"></div>
+</div>
+
+<div class="trees"></div>
+
+<audio autoplay loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c8b3c6a6b.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const intro = document.getElementById("intro");
+const loading = document.getElementById("loading");
+const progress = document.getElementById("progress");
+const garden = document.getElementById("garden");
+
+let flowerCount = 0;
+
+function startLoading() {
+    document.querySelector(".enter-btn").style.display = "none";
+    loading.style.display = "block";
+
+    let width = 0;
+    const interval = setInterval(() => {
+        width += 2;
+        progress.style.width = width + "%";
+
+        if (width >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                intro.style.display = "none";
+                garden.style.display = "flex";
+            }, 500);
+        }
+    }, 100);
+}
+
+function addFlower(emoji, text) {
+    const messageBox = document.getElementById("message");
+    const bouquet = document.getElementById("bouquet");
+
+    messageBox.innerText = text;
+    messageBox.classList.remove("fade-in");
+    void messageBox.offsetWidth;
+    messageBox.classList.add("fade-in");
+
+    bouquet.innerHTML += emoji + " ";
+    flowerCount++;
+
+    if (flowerCount === 4) {
+        bouquet.classList.add("glow");
+    }
+}
+
+function createPetal() {
+    const petal = document.createElement("div");
+    petal.classList.add("petal");
+    petal.innerText = "🌸";
+    petal.style.left = Math.random() * window.innerWidth + "px";
+    petal.style.animationDuration = (8 + Math.random() * 5) + "s";
+    document.body.appendChild(petal);
+    setTimeout(() => petal.remove(), 13000);
+}
+
+setInterval(createPetal, 900);
+</script>
+
+</body>
+</html>
